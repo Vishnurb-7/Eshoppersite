@@ -23,7 +23,7 @@ const OTP = `${Math.floor(1000+ Math.random() * 9000 )}`;
 
 const showLandingPage =async(req,res)=>{
     let cartCount = null 
-  let wishListCount = null
+    let wishListCount = null
 
   if(req.session.user){
     cartCount= await cartModel.getCartCount(req.session.user._id)
@@ -53,6 +53,7 @@ const showSignUpPage =(req,res)=>{
 
 const userSignupAction=(req,res)=>{
     let verified = 0
+    let state = 'active'
     const {firstName,lastName,email,password}=req.body
 
     let mailDetails = {
@@ -70,7 +71,7 @@ const userSignupAction=(req,res)=>{
         }
     });
 
-    userDetails.insertUserCredentials(verified,firstName,lastName,email,password).then((response)=>{
+    userDetails.insertUserCredentials(verified,firstName,lastName,email,password,state).then((response)=>{
 
         userID=response.insertedId
      
@@ -79,7 +80,7 @@ const userSignupAction=(req,res)=>{
 
 }
 const userLoginAction =(req,res)=>{
-   
+    console.log("userLoginAction",req.body)
     userDetails.doLogin(req.body).then((response)=>{
         if(response.status)
         {
@@ -103,14 +104,15 @@ const userLoginAction =(req,res)=>{
 }
 
 const verifyOtp=async(req,res)=>{
-    console.log("hh",userID)
+
+    console.log("hh",req.body)
     let cartCount = null 
     let wishListCount = null
-    if(OTP==req.body.otp){
+    if(OTP==req.body.otpSend){
     req.session.loggedIn=true
     userDetails.userVerified(userID).then((response)=>{
-        userProductDisplay.displayProduct().then((productDetails)=>{
-        categoryDisplay.showCategory().then((category)=>{
+        userProductDisplay.displayProduct().then(async(productDetails)=>{
+        categoryDisplay.showCategory().then(async(category)=>{
             banner.showBanner().then(async (banner)=>{
                 req.session.user=response.user
                 let userData=response.user
