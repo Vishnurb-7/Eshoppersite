@@ -1,0 +1,100 @@
+<div class="signup-box">
+  <h1>Sign Up</h1>
+  <!-- <h4>It's free and only takes a minute</h4> -->
+  <form action="/signupAction" method="post" onsubmit="return validation()">
+    <label>First Name</label>
+    <input type="text" name="firstName" id="Fname" placeholder="" />
+    <span id="userFnameError" class="text-danger fw-normal"></span>
+
+    <label>Last Name</label>
+    <input type="text" name="lastName" id="Lname" placeholder="" />
+    <span id="userLnameError" class="text-danger fw-normal"></span>
+
+    <label>Email</label>
+    <input type="email" name="email" id="email" placeholder="" />
+    <span id="emailError" class="text-danger fw-normal"></span>
+
+    <label>Password</label>
+    <input type="password" name="password" id="pass" placeholder="" />
+    <span id="userPasswordError" class="text-danger fw-normal"></span>
+
+    <label>Confirm Password</label>
+    <input type="password" id="cpass" placeholder="" />
+    <span id="userCpasswordError" class="text-danger fw-normal"></span>
+
+    <input type="submit" value="Submit" />
+  </form>
+  <!-- <p>
+    By clicking the Sign Up button,you agree to our <br />
+    <a href="#">Terms and Condition</a> and <a href="#">Policy Privacy</a>
+  </p> -->
+
+  <p class="para-2">
+    <span class="text-success">Already have an account?</span> <a href="/">Login here</a>
+  </p>
+</div>
+
+
+
+<script>
+  
+  function validation(){
+        let flag = 0;
+        let firstName = document.getElementById('Fname').value.trim()
+        let lastName = document.getElementById('Lname').value.trim()
+        let Email = document.getElementById('email').value.trim()
+        let password = document.getElementById("pass").value.trim()
+        let confirmPassword = document.getElementById('cpass').value.trim()
+
+        let usercheck =  /^[A-Za-z.]{3,30}$/
+
+        let passwordcheck = /^[a-zA-Z0-9!@#$%^&*]{8,16}$/
+
+        let emailcheck = /^[A-Za-z_0-9]{3,}@[A-Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
+        
+    
+        if (usercheck.test(firstName)=='') {
+          document.getElementById('userFnameError').innerHTML = ('firstname required')
+          flag = 1
+        } else {
+          document.getElementById('userFnameError').innerHTML = ''
+        }
+    
+        if (usercheck.test(lastName) =='') {
+          document.getElementById('userLnameError').innerHTML = ('lastName required')
+          flag = 1
+        } else {
+          document.getElementById('userLnameError').innerHTML = ''
+        }
+    
+        if (emailcheck.test(Email) == '') {
+          document.getElementById("emailError").innerHTML = ('email required')
+          flag = 1
+        } else {
+          document.getElementById('emailError').innerHTML = ''
+        }
+    
+        if (passwordcheck.test(password) == '') {
+          document.getElementById('userPasswordError').innerHTML = ('password required')
+          flag = 1
+        } else {
+          document.getElementById('userPasswordError').innerHTML = ''
+        }
+    
+        if (confirmPassword.match(password)=='') {
+          document.getElementById('userCpasswordError').innerHTML = ('incorrect password ')
+          flag = 1
+        }
+    
+          else {
+          document.getElementById('userCpasswordError').innerHTML = ''
+        }
+    
+        if (flag == 1) {
+          return false
+        }
+    
+    
+      }
+
+</script>

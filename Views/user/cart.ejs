@@ -1,0 +1,224 @@
+<!-- Cart Start -->
+<div class="container-fluid pt-5">
+    <div class="row px-xl-5">
+        <div class="col-lg-8 table-responsive mb-5">
+            <table class="table table-bordered text-center mb-0">
+                <thead class="bg-secondary text-dark">
+                    <tr>
+                        <th>Products</th>
+                        <th>Price</th>
+                        <th>Quantity</th>
+                        <th>Remove</th>
+                    </tr>
+                </thead>
+                <tbody class="align-middle">
+                    <% if(products.length>0){ %>
+
+                        <% for(let i=0;i<products.length;i++) { %>
+                            <tr>
+
+                                <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;">
+                                    <%= products[i].productDetails.productName %>
+                                </td>
+                                <td class="align-middle">₹<%= products[i].productDetails.sellingPrice %>
+                                </td>
+
+                                <td class="align-middle">
+                                    <div class="input-group quantity mx-auto" style="width: 100px;">
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-minus"
+                                                onclick="changeQuantity('<%= products[i]._id %>','<%= products[i].productDetails._id %>','<%= userDetails._id %>',-1)">
+                                                <i class="fa fa-minus"></i>
+                                            </button>
+                                        </div>
+                                        <span class="mx-2" id="<%= products[i].productDetails._id %>">
+                                            <%= products[i].quantity%>
+                                        </span>
+                                        <div class="input-group-btn">
+                                            <button class="btn btn-sm btn-primary btn-plus"
+                                                onclick="changeQuantity('<%= products[i]._id %>','<%= products[i].productDetails._id %>','<%= userDetails._id %>',1)">
+                                                <i class="fa fa-plus"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td class="align-middle"><button
+                                        onclick="removeCartProduct('<%= products[i]._id %>','<%= products[i].productDetails._id %>')"
+                                        class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
+                            </tr>
+                            <% } %>
+                                <% } else { %>
+                                    <tr style="border-bottom: 15px solid #f5f5f5;">
+                                        <td>
+                                            <h1>Cart is Empty</h1>
+                                        </td>
+                                    </tr>
+                                    <% } %>
+
+                </tbody>
+            </table>
+        </div>
+        <div class="col-lg-4">
+
+            <div class="input-group">
+                <input type="text" class="form-control p-4" placeholder="Coupon Code" id="couponCode" name="couponCode">
+                <div class="input-group-append">
+                    <button class="btn btn-primary" onclick="applyCoupon()">Apply Coupon</button>
+                </div>
+                <span id="couponMessage"></span>
+            </div>
+
+            <div class="card border-secondary mb-5">
+                <div class="card-header bg-secondary border-0">
+                    <h4 class="font-weight-semi-bold m-0">Cart Summary</h4>
+                </div>
+                <div class="card-body">
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">Subtotal</h6>
+                        <h6 class="font-weight-medium" id="sub-total"> ₹<%=TOTAL%>
+                        </h6>
+                    </div>
+                    <div class="d-flex justify-content-between mb-3 pt-1">
+                        <h6 class="font-weight-medium">discount</h6>
+                        <h6 class="font-weight-medium" id="discountId">0
+                        </h6>
+                    </div>
+                    <div class="d-flex justify-content-between">
+                        <h6 class="font-weight-medium">Shipping</h6>
+                        <h6 class="font-weight-medium">3%
+                        </h6>
+                    </div>
+                </div>
+                <div class="card-footer border-secondary bg-transparent">
+                    <div class="d-flex justify-content-between mt-2">
+                        <h5 class="font-weight-bold">Total</h5>
+                        <h5 class="font-weight-bold"> ₹ <span id="final_total">
+                                <%=TOTAL%>
+                            </span>
+                        </h5>
+                    </div>
+
+                    <button class="btn btn-block btn-primary my-3 py-3" onclick="proceedToCheckOut()">Proceed To
+                        Checkout</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- Cart End -->
+
+
+
+
+<script>
+
+
+    function proceedToCheckOut() {
+
+        let finalTotal = document.getElementById('final_total').innerHTML
+        fetch('/cart/proceedToCheckOut?FINALTOTAL=' + finalTotal,
+            {
+                method: 'get'
+            }
+        ).then(res => res.json()).then((data) => {
+            location.href = "/proceedToCheckOut?finalTotal=" + data
+        })
+    }
+
+
+    function changeQuantity(cartId, productId, userId, count, finalTotal) {
+
+        let quantity = parseInt(document.getElementById(productId).innerHTML)
+        count = parseInt(count)
+
+        $.ajax({
+            url: '/changeProductQuantity',
+            data: {
+                userDetails: userId,
+                cart: cartId,
+                product: productId,
+                count: count,
+                quantity: quantity
+            },
+
+            method: 'post',
+            success: (response) => {
+                if (response.removeProduct) {
+                    swal({
+                        title: 'WARNING',
+                        text: 'PRODUCT REMOVED FROM CART',
+                        icon: 'warning',
+                        button: 'OK'
+                    })
+                    location.reload()
+                }
+                else 
+                {
+                    document.getElementById('sub-total').innerHTML = response.total[0].total
+                    document.getElementById(productId).innerHTML = quantity + count
+                    document.getElementById('final_total').innerHTML = response.total[0].total + ((3 / 100) * response.total[0].total)
+                }
+
+            }
+        })
+    }
+
+
+
+    function removeCartProduct(cartId, productId) {
+
+        fetch(
+            '/removeCartProduct', {
+            method: 'delete',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                cart: cartId,
+                product: productId
+            })
+
+        }
+        ).then((response) => {
+            window.location.reload()
+        })
+    }
+
+
+    function applyCoupon() {
+        let couponCode = document.getElementById('couponCode').value.toUpperCase()
+        let message = document.getElementById('couponMessage');
+        let discountlDisplay = document.getElementById('discountId')
+        let finalTotal = document.getElementById('final_total')
+        fetch('/cart/applyCoupon', {
+            method: 'post',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify(
+                { couponCode })
+        }).then(res => res.json()).then(data => {
+
+
+            if (data.couponStatus == true) {
+
+                message.innerHTML == ''
+                discountlDisplay.innerHTML = data.discount
+                finalTotal.innerHTML = data.discountedTotal
+
+            }
+
+            else {
+
+                message.innerHTML = 'COUPON NOT ACCEPTABLE'
+                discountlDisplay.innerHTML = data.discount
+                finalTotal.innerHTML = data.discountedTotal
+
+            }
+        })
+
+    }
+
+
+
+
+
+
+
+</script>

@@ -1,0 +1,24 @@
+
+
+<div class="container mt-3">
+    <table id="Category" class="table  table-hover">
+      <thead class="text-primary">
+        <tr>
+          <th scope="col">SNO</th>
+          <th scope="col">PICTURE</th>
+          <th scope="col">PRODUCT NAME</th>
+          <th scope="col">PRICE</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% let i=1; for(values of products) {  %>
+          <tr>
+            <th scope="row"><%= i++ %></th>
+            <td><a href="viewProductDetails?id=<%= values.orderProducts[0]._id %>"><img src="<%= values.orderProducts[0].picture %>" alt="" style="width:4em ; height:4em"></a></td>
+            <td><%= values.orderProducts[0].productName %></td>
+            <td>₹<%= values.orderProducts[0].sellingPrice %></td>
+           </tr>
+          <% } %>
+      </tbody>
+    </table>
+  </div>

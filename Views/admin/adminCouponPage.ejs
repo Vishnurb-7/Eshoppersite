@@ -1,0 +1,135 @@
+
+<br><br><br><br>
+
+<section class="home-section mt-2 ">
+    <div class="container mb-3">
+        <!-- Button trigger modal -->
+        <button type="button" class="btn btn-success" data-bs-toggle="modal" data-bs-target="#exampleModal">
+            ADD COUPON
+        </button>
+        <form action="/admin/addNewCoupon" method="POST">
+
+            <!-- Modal -->
+            <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel"
+                aria-hidden="true">
+                <div class="modal-dialog">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title text-warning" id="exampleModalLabel">ADD COUPON</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <label for="coupen" class="text-primary">COUPON NAME  </label>
+                            <input type="text" name="couponName" id="coupenName"><br>
+                            <label for="coupenCode" class="text-primary">COUPON CODE  </label>
+                            <input type="text" name="couponCode" id="coupenName"><br>
+                            <label for="discount" class="text-primary">DISCOUNT  </label>
+                            <input type="number" name="discount" id="discount"><br>
+                            <label for="startingDate" class="text-primary">START DATE  </label>
+                            <input type="date" name="startDate" id="startDate"><br>
+                            <label for="endDate" class="text-primary">END DATE  </label>
+                            <input type="date" name="endDate" id="endDate"><br>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                                Close
+                            </button>
+                            <button type="submit" class="btn btn-success">ADD</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+    </div>
+    </form>
+    <div class="container">
+        <table id="CouponTable" class="table  table-hover">
+            <thead>
+                <tr>
+                    <th scope="col">SNO</th>
+                    <th scope="col">COUPON NAME</th>
+                    <th scope="col">COUPON CODE</th>
+                    <th scope="col">START DATE</th>
+                    <th scope="col">END DATE</th>
+                    <th scope="col">DISCOUNT</th>
+                    <th scope="col">DELETE COUPON</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% for(var i=0;i<availableCoupons.length;i++) {%>
+                    <tr>
+                        <th scope="row">
+                            <%= i+1 %>
+                        </th>
+                        <td>
+                            <%= availableCoupons[i].couponName %>
+                        </td>
+                        <td>
+                            <%= availableCoupons[i].couponCode %>
+                        </td>
+                        <td>
+                            <%= availableCoupons[i].startDate %>
+                        </td>
+                        <td>
+                            <%= availableCoupons[i].endDate %>
+                        </td>
+                        <td>
+                            <%= availableCoupons[i].discount %>
+                        </td>
+                        <td><a href="#" class="btn btn-danger"
+                                onclick="deleteCoupon('<%= availableCoupons[i]._id %>')">DELETE COUPON</a></td>
+                    </tr>
+                    <% } %>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+    let sidebar = document.querySelector(".sidebar");
+    let sidebarBtn = document.querySelector(".sidebarBtn");
+    sidebarBtn.onclick = function () {
+        sidebar.classList.toggle("active");
+        if (sidebar.classList.contains("active")) {
+            sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+        } else sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+    };
+
+    var myModal = document.getElementById("myModal");
+    var myInput = document.getElementById("myInput");
+
+    myModal.addEventListener("shown.bs.modal", function () {
+        myInput.focus();
+    });
+
+    function deleteCoupon(couponId) {
+        swal({
+            title: "DELETE",
+            text: "DO YOU WANT TO DELETE THIS COUPON",
+            icon: "warning",
+            buttons: ["CANCEL", "OK"],
+        }).then(val => {
+            if (val) {
+
+                fetch('/admin/deleteCoupon?id=' + couponId,
+                    {
+                        method: 'delete'
+
+                    }).then(
+                        swal({
+                            title: "SUCCESS",
+                            text: "COUPON SUCCESSFULLY DELETED",
+                            icon: "success",
+                            button: "OK"
+
+                        }).then(val => {
+                            location.reload()
+                        })
+                    )
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        $('#CouponTable').DataTable();
+    });
+</script>

@@ -1,0 +1,137 @@
+<section class="home-section">
+  <nav>
+    <div class="sidebar-button">
+      <i class='bx bx-menu sidebarBtn'></i>
+      <span class="dashboard">Banner Page</span>
+    </div>
+    <div class="search-box">
+      <input type="text" placeholder="Search...">
+      <i class='bx bx-search'></i>
+    </div>
+
+  </nav>
+</section>
+<!-- Button trigger modal -->
+<div class="container mb-2">
+  <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal">
+    Add Banner
+  </button>
+</div>
+
+
+<form action="/admin/addNewBanner" method="post" enctype="multipart/form-data">
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title " id="exampleModalLabel">ADD BANNER</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+
+          <label class="" for="addbrand">Banner Name </label>
+          <input type="text" name="newBanner" id="newBanner">
+          <label for="">Banner Image</label>
+          <input type="file" class="form-control" name="image" id="inputGroupFile04"
+            aria-describedby="inputGroupFileAddon04" aria-label="Upload">
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">ADD</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="container">
+  <table id="bannerTable" class="table table-dark">
+    <thead>
+      <tr>
+        <th scope="col">SNO</th>
+
+        <th scope="col">IMAGE</th>
+
+        <th scope="col">DELETE </th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0;i<banner.length;i++) { %>
+        <tr>
+          <th scope="row">
+            <%= i+1 %>
+          </th>
+
+          <td><img src="<%=banner[i].picture %>" style="width: 4em; height: 4em;" alt=""></td>
+
+          <td><a onclick="bannerDelete('<%=banner[i]._id%>') " class="btn btn-danger">DELETE</a></td>
+        </tr>
+
+        <% } %>
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<script>
+  let sidebar = document.querySelector(".sidebar");
+  let sidebarBtn = document.querySelector(".sidebarBtn");
+  sidebarBtn.onclick = function () {
+    sidebar.classList.toggle("active");
+    if (sidebar.classList.contains("active")) {
+      sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+    } else
+      sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+  }
+
+  var myModal = document.getElementById('myModal')
+  var myInput = document.getElementById('myInput')
+
+  myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+  })
+
+  function bannerDelete(bannerId) {
+
+    swal({
+      title: "DELETE",
+      text: "Do you want to delete this banner",
+      icon: "warning",
+      buttons: ["CANCEL", "OK"],
+    }).then(val => {
+      if (val) {
+        fetch("/admin/deleteBanner", {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/JSON'
+          },
+          body: JSON.stringify({
+            bannerId
+          })
+        }).then(
+          swal({
+            title: "SUCCESS",
+            text: "Banner successfully deleted",
+            icon: "success",
+            button: "OK"
+
+          })
+            .then((val) => {
+              location.reload()
+            })
+        )
+      }
+    })
+
+  }
+
+
+
+  $(document).ready(function () {
+    $('#bannerTable').DataTable();
+  });
+</script>

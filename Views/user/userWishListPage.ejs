@@ -1,0 +1,61 @@
+
+
+
+    <!-- Cart Start -->
+    <div class="container-fluid pt-5">
+        <div class="row px-xl-5">
+            <div class="col-lg-8 table-responsive mb-5">
+                <table class="table table-bordered text-center mb-0">
+                    <thead class="bg-secondary text-dark">
+                        <tr>
+                            <th>Products</th>
+                            <th>Price</th>
+                            <th>Add to Cart</th>
+                            <th>Remove</th>
+                        </tr>
+                    </thead>
+                    <tbody class="align-middle">
+                        <% for(var i=0;i<products.length;i++) { %>
+                        <tr>
+                            <td class="align-middle"><img src="img/product-1.jpg" alt="" style="width: 50px;"> <%= products[i].productDetails.productName %></td>
+                            <td class="align-middle">₹<%= products[i].productDetails.sellingPrice %></td>
+                            <td class="align-middle">  <a onclick="addToCart('<%= productDetails[i]._id %>')" class="btn btn-sm text-dark p-0"><i class="fas fa-shopping-cart text-primary mr-1"></i>Add To Cart</a></td>
+                            <td class="align-middle"><button onclick="removeWishListProduct('<%= products[i]._id %>','<%= products[i].productDetails._id %>')"class="btn btn-sm btn-primary"><i class="fa fa-times"></i></button></td>
+                        </tr>
+                        <% } %>
+                       
+                    </tbody>
+                </table>
+            </div>
+            
+
+
+
+        </div>
+    </div>
+<!-- Cart End -->
+
+
+
+
+
+    <script>
+        function removeWishListProduct(listId,productId)
+        {
+           
+            fetch(
+                '/removeWishListProduct',{
+                    method:'delete',
+                    headers:{'Content-Type':'application/json'},
+                body:JSON.stringify({
+                    wishList:listId,
+                    product:productId
+                })
+                
+            }
+            ).then((response)=>{
+                    window.location.reload()
+                })
+        }
+    </script>
+

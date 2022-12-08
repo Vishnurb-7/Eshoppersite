@@ -1,0 +1,146 @@
+<section class="home-section">
+  <!-- <nav>
+    <div class="sidebar-button">
+      <i class='bx bx-menu sidebarBtn'></i>
+      <span class="dashboard">Category Page</span>
+    </div>
+    <div class="search-box">
+      <input type="text" placeholder="Search...">
+      <i class='bx bx-search'></i>
+    </div> -->
+
+  </nav>
+</section>
+<!-- Button trigger modal -->
+<div class="container mb-2">
+  <button type="button" class="btn btn-primary " data-bs-toggle="modal" data-bs-target="#exampleModal">
+    add brand
+  </button>
+</div>
+
+
+<form action="/admin/addBrand" method="post">
+  <!-- Modal -->
+  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title " id="exampleModalLabel">ADD BRAND</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <label class="" for="addbrand">Brand Name </label>
+          <input type="text" name="newBrand" id="newBrand">
+          <!-- <label for="">Brand Image</label>
+          <input type="file" class="form-control" name="image" id="inputGroupFile04" aria-describedby="inputGroupFileAddon04" aria-label="Upload" > -->
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btn-warning" data-bs-dismiss="modal">Close</button>
+          <button type="submit" class="btn btn-primary">ADD</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</form>
+
+<div class="container">
+  <table class="table table-dark" id="brandTable">
+    <thead>
+      <tr>
+        <th scope="col">SNO</th>
+        <th scope="col">BRAND NAME</th>
+      
+        <th scope="col">DELETE BRAND</th>
+
+      </tr>
+    </thead>
+    <tbody>
+      <% for(var i=0;i<brand.length;i++){ %>
+        <tr>
+          <th scope="row">
+            <%= i+1 %>
+          </th>
+          <td>
+            <%= brand[i].newBrand %>
+          </td>
+        
+          <td><a class="btn btn-danger" onclick="deleteBrand('<%= brand[i]._id %>')">DELETE</a></td>
+        </tr>
+        <% } %>
+
+    </tbody>
+  </table>
+</div>
+
+
+
+
+<script>
+  let sidebar = document.querySelector(".sidebar");
+  let sidebarBtn = document.querySelector(".sidebarBtn");
+  sidebarBtn.onclick = function () {
+    sidebar.classList.toggle("active");
+    if (sidebar.classList.contains("active")) {
+      sidebarBtn.classList.replace("bx-menu", "bx-menu-alt-right");
+    } else
+      sidebarBtn.classList.replace("bx-menu-alt-right", "bx-menu");
+  }
+
+  var myModal = document.getElementById('myModal')
+  var myInput = document.getElementById('myInput')
+
+  myModal.addEventListener('shown.bs.modal', function () {
+    myInput.focus()
+  })
+
+
+  $(document).ready(function () {
+    $('#brandTable').DataTable();
+  });
+
+
+
+  function deleteBrand(brandId) {
+
+    swal({
+      title: "DELETE",
+      text: "DO YOU WANT TO DELETE THIS BRAND",
+      icon: "warning",
+      buttons: ["CANCEL", "OK"],
+    }).then(val => {
+      if (val) {
+        fetch('/admin/deleteBrand?id=' + brandId,
+          {
+            method: 'delete'
+
+          }).then(res => res.json()).then(data => {
+            console.log(data);
+            if (data.status) {
+              swal({
+                title: "SUCCESS",
+                text: "BRAND SUCCESSFULLY DELETED",
+                icon: "success",
+                button: "OK"
+
+              }).then(val => {
+                location.reload()
+              })
+
+            }
+            else {
+              swal({
+                title: "WARNING",
+                text: " BRAND ALREADY IN USE ",
+                icon: "warning",
+                button: "OK"
+
+              }).then(val => {
+                location.reload()
+              })
+            }
+          })
+      }
+    })
+  }
+
+</script>

@@ -1,0 +1,52 @@
+
+ <div class="login-box">
+    <h1>Login</h1>
+    <form action="/userNewLoginAction" method="post" onsubmit="return userLoginValidation()">
+      <label>User Email</label>
+      <span id="userNameError" class="text-danger fw-normal"></span>
+      <input type="email"  id="name" name="userEmail"  />
+      <label>Password</label>
+     <input type="password" id="pass" name="password"  />
+      <span id="passwordError" class="text-danger fw-normal"></span>
+      <br><br>
+      <input type="submit"  value="Login">
+     
+    </form>
+
+
+  <script>
+    function userLoginValidation(){
+        let flag =0
+        let adminName = document.getElementById('name').value.trim()
+        let password = document.getElementById('pass').value.trim()
+
+        let usercheck=/^[A-Za-z_0-9]{3,}@[A-Za-z]{3,}[.]{1}[A-Za-z.]{2,6}$/
+        let passwordcheck = /(?=.*[0-9])(?=.*[!@#$%^&*])[a-zA-Z0-9!@#$%^&*]{8,16}$/
+
+        if(usercheck.test(adminName)==''){
+            document.getElementById('userNameError').innerHTML=('Name required')
+            // document.getElementById('userNameError').style.border='1px solid green'
+            flag=1
+
+        }else {
+            document.getElementById('userNameError').innerHTML=''
+
+        }
+
+        if(passwordcheck.test(password)==''){
+            document.getElementById('passwordError').innerHTML='Incorrect Password'
+            flag=1
+        }else{
+            document.getElementById('passwordError').innerHTML=''
+
+        }
+
+        if(flag==1){
+            return false
+        }
+
+    }
+
+  </script> 
+
+   
