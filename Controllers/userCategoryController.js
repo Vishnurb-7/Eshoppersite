@@ -1,6 +1,5 @@
 
-// const userDetails= require('../Model/userBasic')
-// const nodemailer =require('nodemailer')
+
 const userProductDisplay=require('../Model/userProductDisplayModel')
 const categoryDisplay=require('../Model/adminCategory')
 const banner =require('../Model/bannerModel')
@@ -36,20 +35,13 @@ const showCategoryPage =async(req,res)=>{
 
     })
     
-    }else{
-        categoryModel.showCategoryBasedProducts(catName).then((products)=>{
-            userProductDisplay.displayProduct().then((productDetails)=>{
-                categoryDisplay.showCategory().then(async(category)=>{
-           
-                    cartCount= await cartModel.getCartCount(req.session.user._id)
-                    wishListCount= await wishListModel.getWishListCount(req.session.user._id)
-                    let userData=req.session.user
-                    res.render("user/category",{admin:false,user:true,productDetails,category,userData,cartCount,wishListCount,products})
+    }
+    else
+    {
+       
+        res.redirect("/showUserLoginPage")
 
-                })
-            })
-        })
-
+    
     } 
    
 }

@@ -104,11 +104,11 @@ const userLoginAction =(req,res)=>{
 }
 
 const verifyOtp=async(req,res)=>{
-
-    console.log("hh",req.body)
+    req.body.otpSend = parseInt(req.body.otpSend)
+    OTPData = parseInt(OTP)
     let cartCount = null 
     let wishListCount = null
-    if(OTP==req.body.otpSend){
+    if(OTPData==req.body.otpSend){
     req.session.loggedIn=true
     userDetails.userVerified(userID).then((response)=>{
         userProductDisplay.displayProduct().then(async(productDetails)=>{
